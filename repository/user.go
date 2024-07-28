@@ -8,6 +8,9 @@ import (
 type UserRepository interface {
 	ViewUsers() ([]entity.User, error)
 	ViewUserById(Id int) (*entity.User, error)
+	CreateUser(user entity.User) (*entity.User, error)
+	UpdateUser(user entity.User) (*entity.User, error)
+	DeleteUser(Id int) error
 }
 
 type userRepository struct {
@@ -52,4 +55,27 @@ func (r *userRepository) ViewUserById(id int) (*entity.User, error) {
 		return nil, err
 	}
 	return &user, nil
+}
+
+func (r *userRepository) CreateUser(user entity.User) (*entity.User, error) {
+	err := r.db.QueryRow("INSERT INTO users (name, email, password, created_at, updated_at) VALUES ($1, $2, $3, $4, $5) RETURNING id",
+		user.Name, user.Email, user.Password, user.Created_at, user.Update_at).Scan(&user.Id)
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
+func (r *userRepository) UpdateUser(user entity.User) (*entity.User, error) {
+	_, err := r.db.Exec("UPDATE users SET name = $1, email = $2, password = $3, updated_at = $4 WHERE id = $5",
+		user.Name, user.Email, user.Password, user.Update_at, user.Id)
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
+func (r *userRepository) DeleteUser(id int) error {
+	_, err := r.db.Exec("DELETE FROM users WHERE id = $1", id)
+	return err
 }

@@ -34,6 +34,9 @@ func main() {
 	v1 := route.Group("/v1")
 	v1.GET("/users", userHandler.ViewUsers)
 	v1.GET("/users/:id", userHandler.ViewUserById)
+	v1.POST("/users", userHandler.CreateUser)
+	v1.PUT("/users/:id", userHandler.UpdateUser)
+	v1.DELETE("/users/:id", userHandler.DeleteUser)
 
 	route.Run()
 
