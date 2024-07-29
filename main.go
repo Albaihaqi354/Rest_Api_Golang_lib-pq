@@ -26,6 +26,7 @@ func main() {
 	db := connectDB()
 	defer db.Close()
 
+	// User
 	userRepository := repository.NewUserRepository(db)
 	userService := service.NewUserService(userRepository)
 	userHandler := handler.NewUserHandler(userService)
@@ -37,6 +38,13 @@ func main() {
 	v1.POST("/users", userHandler.CreateUser)
 	v1.PUT("/users/:id", userHandler.UpdateUser)
 	v1.DELETE("/users/:id", userHandler.DeleteUser)
+
+	// Role
+	roleRepository := repository.NewRoleRepository(db)
+	roleService := service.NewRoleService(roleRepository)
+	roleHandler := handler.NewRoleHandler(roleService)
+
+	v1.GET("/roles", roleHandler.ViewRoles)
 
 	route.Run()
 
