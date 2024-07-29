@@ -7,6 +7,7 @@ import (
 
 type RoleRepository interface {
 	ViewRoles() ([]entity.Role, error)
+	ViewRolesById(Id int) (*entity.Role, error)
 }
 
 type roleRepository struct {
@@ -34,4 +35,13 @@ func (r *roleRepository) ViewRoles() ([]entity.Role, error) {
 		roles = append(roles, role)
 	}
 	return roles, nil
+}
+
+func (r *roleRepository) ViewRolesById(Id int) (*entity.Role, error) {
+	var role entity.Role
+	err := r.db.QueryRow("SELECT id, role_name, description FROM roles WHERE id = $1", Id).Scan(&role.Id, &role.RoleName, &role.Description)
+	if err != nil {
+		return nil, err
+	}
+	return &role, nil
 }

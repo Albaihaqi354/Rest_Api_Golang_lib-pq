@@ -45,6 +45,7 @@ func main() {
 	roleHandler := handler.NewRoleHandler(roleService)
 
 	v1.GET("/roles", roleHandler.ViewRoles)
+	v1.GET("/roles/:id", roleHandler.ViewRolesById)
 
 	route.Run()
 

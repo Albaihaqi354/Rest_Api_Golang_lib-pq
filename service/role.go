@@ -7,6 +7,7 @@ import (
 
 type RoleService interface {
 	ViewRoles() ([]entity.Role, error)
+	ViewRolesById(Id int) (*entity.Role, error)
 }
 
 type roleService struct {
@@ -19,6 +20,14 @@ func NewRoleService(roleRepository repository.RoleRepository) *roleService {
 
 func (s *roleService) ViewRoles() ([]entity.Role, error) {
 	roles, err := s.roleRepository.ViewRoles()
+	if err != nil {
+		return nil, err
+	}
+	return roles, nil
+}
+
+func (s *roleService) ViewRolesById(Id int) (*entity.Role, error) {
+	roles, err := s.roleRepository.ViewRolesById(Id)
 	if err != nil {
 		return nil, err
 	}

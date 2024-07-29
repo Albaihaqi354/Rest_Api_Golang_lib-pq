@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"strconv"
 	"user-management/entity"
 	"user-management/response"
 	"user-management/service"
@@ -37,6 +38,38 @@ func (h *roleHandler) ViewRoles(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"data": rolesResponse,
 	})
+}
+
+func (h *roleHandler) ViewRolesById(c *gin.Context) {
+	idString := c.Param("id")
+	id, err := strconv.Atoi(idString)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid ID" + idString,
+		})
+		return
+	}
+
+	role, err := h.roleService.ViewRolesById(id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	if role == nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"error": "Role not found",
+		})
+		return
+	}
+
+	rolesResponse := convertToRolesResponse(*role)
+
+	c.JSON(http.StatusOK, gin.H{
+		"data": rolesResponse,
+	})
+
 }
 
 func convertToRolesResponse(roles entity.Role) response.RoleResponse {
