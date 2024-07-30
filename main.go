@@ -46,6 +46,9 @@ func main() {
 
 	v1.GET("/roles", roleHandler.ViewRoles)
 	v1.GET("/roles/:id", roleHandler.ViewRolesById)
+	v1.POST("/roles", roleHandler.CreateRole)
+	v1.PUT("/roles/:id", roleHandler.UpdateRole)
+	v1.DELETE("/roles/:id", roleHandler.DeleteRole)
 
 	route.Run()
 

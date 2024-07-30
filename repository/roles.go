@@ -8,6 +8,9 @@ import (
 type RoleRepository interface {
 	ViewRoles() ([]entity.Role, error)
 	ViewRolesById(Id int) (*entity.Role, error)
+	CreateRoles(role entity.Role) (*entity.Role, error)
+	UpdateRoles(role entity.Role) (*entity.Role, error)
+	DeleteRoles(Id int) error
 }
 
 type roleRepository struct {
@@ -44,4 +47,25 @@ func (r *roleRepository) ViewRolesById(Id int) (*entity.Role, error) {
 		return nil, err
 	}
 	return &role, nil
+}
+
+func (r *roleRepository) CreateRoles(role entity.Role) (*entity.Role, error) {
+	err := r.db.QueryRow("INSERT INTO roles (role_name, description) VALUES ($1, $2) RETURNING id", role.RoleName, role.Description).Scan(&role.Id)
+	if err != nil {
+		return nil, err
+	}
+	return &role, nil
+}
+
+func (r *roleRepository) UpdateRoles(role entity.Role) (*entity.Role, error) {
+	_, err := r.db.Exec("UPDATE roles SET role_name = $1, description = $2 WHERE id = $3", role.RoleName, role.Description, role.Id)
+	if err != nil {
+		return nil, err
+	}
+	return &role, nil
+}
+
+func (r *roleRepository) DeleteRoles(Id int) error {
+	_, err := r.db.Exec("DELETE FROM roles WHERE id = $1", Id)
+	return err
 }

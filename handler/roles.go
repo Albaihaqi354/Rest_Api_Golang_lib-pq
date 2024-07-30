@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 	"user-management/entity"
+	"user-management/request"
 	"user-management/response"
 	"user-management/service"
 
@@ -70,6 +71,110 @@ func (h *roleHandler) ViewRolesById(c *gin.Context) {
 		"data": rolesResponse,
 	})
 
+}
+
+func (h *roleHandler) CreateRole(c *gin.Context) {
+	var roleRequest request.Rolesrequest
+
+	err := c.ShouldBindJSON(&roleRequest)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	id, err := roleRequest.Id.Int64()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid ID",
+		})
+		return
+	}
+
+	role := entity.Role{
+		Id:          int(id),
+		RoleName:    roleRequest.RoleName,
+		Description: roleRequest.Description,
+	}
+
+	newRole, err := h.roleService.CreateRoles(role)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	userResponse := convertToRolesResponse(*newRole)
+
+	c.JSON(http.StatusOK, gin.H{
+		"data": userResponse,
+	})
+
+}
+
+func (h *roleHandler) UpdateRole(c *gin.Context) {
+	var roleRequest request.Rolesrequest
+
+	err := c.ShouldBindJSON(&roleRequest)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	id, err := roleRequest.Id.Int64()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid ID",
+		})
+		return
+	}
+
+	role := entity.Role{
+		Id:          int(id),
+		RoleName:    roleRequest.RoleName,
+		Description: roleRequest.Description,
+	}
+
+	updatedRole, err := h.roleService.UpdateRoles(role)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	userResponse := convertToRolesResponse(*updatedRole)
+
+	c.JSON(http.StatusOK, gin.H{
+		"data": userResponse,
+	})
+}
+
+func (h *roleHandler) DeleteRole(c *gin.Context) {
+	idString := c.Param("id")
+	id, err := strconv.Atoi(idString)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid ID" + idString,
+		})
+		return
+	}
+
+	err = h.roleService.DeleteRoles(id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Role deleted successfully",
+	})
 }
 
 func convertToRolesResponse(roles entity.Role) response.RoleResponse {
