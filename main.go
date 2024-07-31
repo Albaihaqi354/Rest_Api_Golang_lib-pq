@@ -50,6 +50,17 @@ func main() {
 	v1.PUT("/roles/:id", roleHandler.UpdateRole)
 	v1.DELETE("/roles/:id", roleHandler.DeleteRole)
 
+	// User Role
+	userRoleRepository := repository.NewUserRoleRepository(db)
+	userRoleService := service.NewUserRoleService(userRoleRepository)
+	userRolehandler := handler.NewUserRoleHandler(userRoleService)
+
+	v1.GET("/user-roles", userRolehandler.ViewUserRoles)
+	v1.GET("/user-roles/:id", userRolehandler.ViewUserRolesById)
+	v1.POST("/user-roles", userRolehandler.CreateUserRoles)
+	v1.PUT("/user-roles/:id", userRolehandler.UpdateUserRoles)
+	v1.DELETE("/user-roles/:id", userRolehandler.DeleteUserRoles)
+
 	route.Run()
 
 }
