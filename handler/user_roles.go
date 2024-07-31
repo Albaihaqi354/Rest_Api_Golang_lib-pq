@@ -91,21 +91,8 @@ func (h *userRoleHandler) CreateUserRoles(c *gin.Context) {
 		return
 	}
 
-	userId, err := userRoleRequest.UserId.Int64()
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid ID",
-		})
-		return
-	}
-
-	roleId, err := userRoleRequest.RoleId.Int64()
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid ID",
-		})
-		return
-	}
+	userId := int64(userRoleRequest.UserId)
+	roleId := int64(userRoleRequest.RoleId)
 
 	userRole := entity.UserRoles{
 		Id:     int(id),
@@ -147,21 +134,8 @@ func (h *userRoleHandler) UpdateUserRoles(c *gin.Context) {
 		return
 	}
 
-	userId, err := userRoleRequest.UserId.Int64()
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid ID",
-		})
-		return
-	}
-
-	roleId, err := userRoleRequest.RoleId.Int64()
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid ID",
-		})
-		return
-	}
+	userId := int64(userRoleRequest.UserId)
+	roleId := int64(userRoleRequest.RoleId)
 
 	userRole := entity.UserRoles{
 		Id:     id,
