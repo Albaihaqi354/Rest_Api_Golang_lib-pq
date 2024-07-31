@@ -2,6 +2,9 @@
 
 User Management Service is a simple web application built with Go and the Gin framework. This application provides a RESTful API for managing users, roles, and the relationships between users and roles within the system.
 
+User Management Service is a simple web application built with Go and the Gin framework. It provides a RESTful API for managing users, roles, and the relationships between users and roles. This project demonstrates the implementation of a CRUD (Create, Read, Update, Delete) API with database interactions using PostgreSQL. It's designed to be a starting point for developers looking to build scalable backend services in Go.
+
+
 ## Features
 
 - **Users**
